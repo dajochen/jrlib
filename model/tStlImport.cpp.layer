@@ -1,0 +1,63 @@
+#include "tStlImport.h"
+
+#include <QtCore>
+#include <tList.h>
+#include <tVector.h>
+#include <tVectorStringConverter.h>
+#include "tTrianglePatch.h"
+#include "element/misc/tTriangle.h"
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+tStlImport::tStlImport(tLayer *l, QString stlFile)
+{
+
+    QFile file(stlFile);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+    else {
+
+        QTextStream stl(&file);
+
+        tLayer *solid = NULL;
+        int vCounter = 0;
+        tVector vs[3];
+
+        while (!stl.atEnd()) {
+            QString line = stl.readLine();
+
+
+            QRegExp solidTest("^\\s*(?!end)solid\\s+(.*)$");
+            QRegExp loopBegin("^.*outer\\s+loop.*$");
+            QRegExp vertexTest("^.*vertex(.*)$");
+
+            if (solidTest.indexIn(line.toLower().simplified()) > -1) {
+                QString caption = solidTest.capturedTexts().last();
+                if (caption.isEmpty()) {caption = "noName";}
+                solid = l->addLayer(caption);
+                //cout << "parsing solid" << endl;
+            } else if (loopBegin.indexIn(line.toLower().simplified()) > -1 ) {
+                //cout << "new face" << endl;
+                vCounter = 0;
+            } else if (vertexTest.indexIn(line.toLower().simplified()) > -1) {
+                vCounter++;
+                QString loc = vertexTest.capturedTexts().last();
+                vs[0] = vs[1];
+                vs[1] = vs[2];
+                vs[2] = tVectorStringConverter::toVector(loc);
+                if (solid && vCounter == 3){
+                    tList<tDot*> dotList;
+                    dotList.append( new tPoint(NULL, vs[0]) );
+                    dotList.append( new tPoint(NULL, vs[1]) );
+                    dotList.append( new tPoint(NULL, vs[2]) );
+                    tTriangle* t = dynamic_cast<tTriangle*>( solid->addElement(iTriangle::theType()) );
+                    if (t){
+                        t->setVertices(dotList);
+                    }
+                }
+            }
+        }
+    }
+}

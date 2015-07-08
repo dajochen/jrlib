@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/Buttons" >
+        <file>Icons/tAbsBead.png</file>
+        <file>Icons/tAbsPoint.png</file>
+        <file>Icons/tBSpline.png</file>
+        <file>Icons/tCSpline.png</file>
+        <file>Icons/tLine.png</file>
+        <file>Icons/tRelBead.png</file>
+        <file>Icons/tRelPoint.png</file>
+        <file>Icons/tTriangle.png</file>
+        <file>Icons/tXPlane.png</file>
+        <file>Icons/tYPlane.png</file>
+        <file>Icons/tZPlane.png</file>
+    </qresource>
+    <qresource prefix="/Menu" >
+        <file>Icons/mnNeu.png</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,131 @@
+/*
+ * jr.h
+ *
+ *  Created on: 30.03.2012
+ *      Author: hundemj
+ */
+
+#ifndef JR_H_MODULE
+#define JR_H_MODULE
+
+
+#include "classes/jrTypes.h"
+
+#include "classes/tVector.h"
+#include "classes/tVectorStringConverter.h"
+#include "classes/tList.h"
+#include "classes/tSolve.h"
+#include "classes/tRGB.h"
+
+#include "classes/simplex.h"
+
+#include "element/tElement.h"
+#include "element/tLinkedElement.h"
+
+
+#include "element/tGroup.h"
+
+#include "element/point/tDot.h"
+#include "element/point/tPoint.h"
+#include "element/point/tRelPoint.h"
+#include "element/point/tMidPoint.h"
+#include "element/point/tProjectedPoint.h"
+#include "element/point/tOffsetPoint.h"
+#include "element/point/tRotatedPoint.h"
+#include "element/point/tAbsBead.h"
+#include "element/point/tMagnet.h"
+#include "element/point/tAbsMagnet.h"
+#include "element/point/tStickyMagnet.h"
+
+#include "element/curve/tCurve.h"
+#include "element/curve/tLine.h"
+#include "element/curve/tBSpline.h"
+#include "element/curve/tCSpline.h"
+//#include "element/curve/tAbstractSpline.h"
+#include "element/curve/tHermiteSpline.h"
+#include "element/curve/tDistortedSpline.h"
+#include "element/curve/tTransformedDotListCurve.h"
+#include "element/curve/tRotatedCurve.h"
+#include "element/curve/tPolyCurve.h"
+#include "element/curve/tMidCurve.h"
+#include "element/curve/tSumCurve.h"
+#include "element/curve/tSubCurve.h"
+#include "element/curve/tOffsetCurve.h"
+
+#include "element/curve/snake/tSnake.h"
+#include "element/curve/snake/tLineSnake.h"
+#include "element/curve/snake/tCSnake.h"
+
+#include "element/surface/tSurface.h"
+#include "element/surface/tRuledSurface.h"
+#include "element/surface/tCLoft.h"
+#include "element/surface/tRotatedSurface.h"
+#include "element/surface/tRevolvedSurface.h"
+#include "element/surface/tSubSurface.h"
+#include "element/surface/tFunctionSurface.h"
+
+#include "element/surface/tPropSurface.h"
+#include "element/surface/tWageningenBSeries.h"
+#include "element/surface/tKaSeries.h"
+#include "element/surface/tDuct19A.h"
+#include "element/surface/tPropHubSurface.h"
+
+#include "element/plane/tBasicPlane.h"
+#include "element/plane/tXPlane.h"
+#include "element/plane/tYPlane.h"
+#include "element/plane/tZPlane.h"
+#include "element/plane/tPlane.h"
+
+
+#include "element/misc/tQuad.h"
+#include "element/misc/tRefinedQuad.h"
+#include "element/misc/2DGrid/tStructured2DGrid.h"
+#include "element/misc/2DGrid/tStructured2DSubGrid.h"
+#include "element/misc/2DGrid/tStructured2DInterpolGrid.h"
+#include "element/misc/2DGrid/tStructured2DSurfaceGrid.h"
+#include "element/misc/3DGrid/tStructured3DGrid.h"
+
+#include "element/misc/tPolygon.h"
+#include "element/misc/tTrianglePatch.h"
+//#include "element/misc/tNet.h
+//tNetPoint.h
+
+#include "element/variable/tVariableNameSpace.h"
+#include "element/variable/tVariable.h"
+#include "element/variable/tRealVariable.h"
+#include "element/variable/tVectorVariable.h"
+#include "element/variable/tListVariable.h"
+//tOperator.h
+//tRealOperator.h
+//tVectorOperator.h
+//tListOperator.h
+
+#include "model/tLayer.h"
+#include "model/tModel.h"
+#include "model/tModelIO.h"
+#include "model/tModelCommand.h"
+#include "model/tPatExport.h"
+#include "model/tPclExport.h"
+#include "model/tStlExport.h"
+#include "model/tAbaqusMesh.h"
+//#include "model/dxfTools.h"
+//#include "model/tDxfExport.h"
+#include "model/DXFReader.h"
+
+
+#include "gui/tMainForm.h"
+#include "gui/tProgrammversionDlg.h"
+
+#include "views/tModelView.h"
+#include "views/tGLModelView.h"
+
+//#include "views/jrgui.h"
+#include "views/tSelectionView.h"
+#include "views/tTableModelView.h"
+#include "views/tPropertyDelegate.h"
+#include "views/tVectorEdit.h"
+
+#include "views/tElementCreator.h"
+#include "views/tCopyPasteOptionsDlg.h"
+
+#endif /* JR_H_ */

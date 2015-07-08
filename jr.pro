@@ -8,6 +8,7 @@ TARGET = jr
 
 QT += xml opengl core gui widgets
 
+UI_DIR = uic
 
 
 CONFIG += BUILD_WITH_GSL
@@ -357,7 +358,6 @@ SOURCES += classes/simplex.cpp \
            #element/tPropertyLinker.cpp \
            gui/tMainForm.cpp \
            gui/tProgrammversionDlg.cpp \
-           #interfaceGenerator/main.cpp \
            model/DXFReader.cpp \
            #model/dxfTools.cpp \
            model/tAbaqusMesh.cpp \

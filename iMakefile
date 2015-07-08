@@ -1,0 +1,122 @@
+iGen = intrfaceGenerator/intrfaceGenerator
+
+
+
+G = ./
+
+P = $(G)element/point/
+C = $(G)element/curve/
+CS = $(C)snake/
+S = $(G)element/surface/
+M = $(G)element/misc/
+PLANE = $(G)element/plane/
+VARIABLE = $(G)element/variable/
+
+pointFiles = $(P)tDot.h \
+$(P)tPoint.h \
+$(P)tRelPoint.h \
+$(P)tRotatedPoint.h \
+$(P)tProjectedPoint.h \
+$(P)tFunctionPoint.h \
+$(P)tOffsetPoint.h \
+$(P)tAbsBead.h \
+$(P)tMagnet.h \
+$(P)tAbsMagnet.h \
+$(P)tStickyMagnet.h \
+$(P)tMidPoint.h
+
+curveFiles = $(C)tCurve.h \
+$(C)tLine.h \
+$(C)tDotListCurve.h \
+$(C)tAbstractSpline.h \
+$(C)tBSpline.h \
+$(C)tCSpline.h \
+$(C)tHermiteSpline.h \
+$(C)tDxfSpline.h \
+$(C)tPolygonCurve.h \
+$(C)tTransformedDotListCurve.h \
+$(C)tDistortedSpline.h \
+$(C)tSubCurve.h \
+$(C)tPolyCurve.h \
+$(C)tRotatedCurve.h \
+$(C)tMidCurve.h \
+$(C)tSumCurve.h \
+$(C)tOffsetCurve.h \
+$(C)tOffsetCurve2.h \
+$(C)tFunctionCurve.h \
+$(CS)tSnake.h \
+$(CS)tLineSnake.h \
+$(CS)tCSnake.h
+              
+surfaceFiles = $(S)tSurface.h \
+$(S)tCLoft.h \
+$(S)tRuledSurface.h \
+$(S)tRotatedSurface.h \
+$(S)tRevolvedSurface.h \
+$(S)tFunctionSurface.h \
+$(S)tSubSurface.h \
+$(S)tKaSeries.h \
+$(S)tPropSurface.h \
+$(S)tWageningenBSeries.h \
+$(S)tPropHubSurface.h \
+$(S)tDuct19A.h
+
+miscFiles = $(M)tStructuredAbstractGrid.h \
+$(M)3DGrid/tStructured3DGrid.h \
+$(M)3DGrid/tStructured3DBlockMeshGrid.h \
+$(M)3DGrid/tStructured3DTwoSidedGrid.h \
+$(M)2DGrid/tStructured2DSubGrid.h \
+$(M)2DGrid/tStructured2DInterpolGrid.h \
+$(M)2DGrid/tStructured2DSurfaceGrid.h \
+$(M)2DGrid/tStructured2DGrid.h \
+$(M)tAbstractPolygon.h \
+$(M)tPolygon.h \
+$(M)tTriangle.h \
+$(M)tTrianglePatch.h \
+$(M)tQuad.h \
+$(M)tRefinedQuad.h \
+$(M)tNet.h \
+$(M)tNetPoint.h \
+$(M)draping/tDrapedPatch.h
+            
+planeFiles = $(PLANE)tBasicPlane.h \
+$(PLANE)tThreePointPlane.h \
+$(PLANE)tPlane.h \
+$(PLANE)tXPlane.h \
+$(PLANE)tYPlane.h \
+$(PLANE)tZPlane.h
+
+variableFiles = $(VARIABLE)tOperator.h \
+$(VARIABLE)tVariable.h \
+$(VARIABLE)tVariableNameSpace.h \
+$(VARIABLE)tRealOperator.h \
+$(VARIABLE)tRealVariable.h \
+$(VARIABLE)tVectorOperator.h \
+$(VARIABLE)tVectorVariable.h \
+$(VARIABLE)tListOperator.h \
+$(VARIABLE)tListVariable.h  
+                
+otherFiles = $(G)element/tGroup.h \
+$(G)model/tLayer.h \
+$(G)model/tModel.h \
+$(G)element/tPaintableElement.h
+
+ALL:
+	@$(iGen) $(pointFiles)
+	@$(iGen) $(curveFiles)
+	@$(iGen) $(surfaceFiles)
+	@$(iGen) $(variableFiles)
+	@$(iGen) $(planeFiles)
+	@$(iGen) $(miscFiles)
+	@$(iGen) $(otherFiles)
+#	make -f makefile debug
+
+FORCE:
+	@$(iGen) -force $(pointFiles)
+	@$(iGen) -force $(curveFiles)
+	@$(iGen) -force $(surfaceFiles)
+	@$(iGen) -force $(variableFiles)
+	@$(iGen) -force $(planeFiles)
+	@$(iGen) -force $(miscFiles)
+	@$(iGen) -force $(otherFiles)
+

@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <author>Rupert Henn</author>
+ <class>MainForm</class>
+ <widget class="QMainWindow" name="MainForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1289</width>
+    <height>758</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>150</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="acceptDrops">
+   <bool>true</bool>
+  </property>
+  <property name="windowTitle">
+   <string>JR</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>Icons/JR.png</normaloff>Icons/JR.png</iconset>
+  </property>
+  <property name="iconSize">
+   <size>
+    <width>32</width>
+    <height>32</height>
+   </size>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="acceptDrops">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1289</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuHilfe">
+    <property name="title">
+     <string>Hilfe</string>
+    </property>
+    <addaction name="actionProgrammversion"/>
+   </widget>
+   <widget class="QMenu" name="menuFenster">
+    <property name="title">
+     <string>Fenster</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuAnsicht">
+    <property name="title">
+     <string>Ansicht</string>
+    </property>
+    <addaction name="action3D_Fenster"/>
+    <addaction name="separator"/>
+    <addaction name="actionExportieren_2"/>
+   </widget>
+   <widget class="QMenu" name="menuBearbeiten">
+    <property name="title">
+     <string>&amp;Bearbeiten</string>
+    </property>
+    <addaction name="actionR_ckg_ngig"/>
+    <addaction name="separator"/>
+    <addaction name="actionAusschneiden"/>
+    <addaction name="actionKopieren"/>
+    <addaction name="actionEinf_gen"/>
+    <addaction name="actionL_schen"/>
+    <addaction name="separator"/>
+    <addaction name="actionImportieren"/>
+    <addaction name="actionExportieren"/>
+    <addaction name="separator"/>
+    <addaction name="actionInit"/>
+   </widget>
+   <widget class="QMenu" name="menuModell">
+    <property name="title">
+     <string>&amp;Modell</string>
+    </property>
+    <widget class="QMenu" name="menuRecent_Files">
+     <property name="title">
+      <string>Recent Files</string>
+     </property>
+     <addaction name="separator"/>
+    </widget>
+    <addaction name="actionNeu"/>
+    <addaction name="actionLaden"/>
+    <addaction name="menuRecent_Files"/>
+    <addaction name="actionSpeichern"/>
+    <addaction name="separator"/>
+    <addaction name="pluginPlaceholder"/>
+    <addaction name="separator"/>
+    <addaction name="actionSchlie_en"/>
+    <addaction name="separator"/>
+    <addaction name="actionBeenden"/>
+   </widget>
+   <addaction name="menuModell"/>
+   <addaction name="menuBearbeiten"/>
+   <addaction name="menuAnsicht"/>
+   <addaction name="menuFenster"/>
+   <addaction name="menuHilfe"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QDockWidget" name="createElementWidget">
+   <property name="minimumSize">
+    <size>
+     <width>200</width>
+     <height>41</height>
+    </size>
+   </property>
+   <property name="windowTitle">
+    <string>Neues Element erzeugen</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="createElementWidgetContents"/>
+  </widget>
+  <widget class="QDockWidget" name="selectionWidget">
+   <property name="minimumSize">
+    <size>
+     <width>200</width>
+     <height>41</height>
+    </size>
+   </property>
+   <property name="windowTitle">
+    <string>Eigenschaften</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="selectionWidgetContents"/>
+  </widget>
+  <widget class="QDockWidget" name="structureWidget">
+   <property name="minimumSize">
+    <size>
+     <width>250</width>
+     <height>41</height>
+    </size>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea|Qt::TopDockWidgetArea</set>
+   </property>
+   <property name="windowTitle">
+    <string>Model Tree</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="structureWidgetContents"/>
+  </widget>
+  <widget class="QDockWidget" name="selectionSummaryWidget">
+   <property name="windowTitle">
+    <string>Selection Summary</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="selectionSummaryContents"/>
+  </widget>
+  <widget class="QDockWidget" name="propertyEditorDock">
+   <property name="features">
+    <set>QDockWidget::AllDockWidgetFeatures</set>
+   </property>
+   <property name="windowTitle">
+    <string>PropertyEditor</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="propertyEditorWidget"/>
+  </widget>
+  <action name="actionBeenden">
+   <property name="text">
+    <string>B&amp;eenden</string>
+   </property>
+  </action>
+  <action name="actionR_ckg_ngig">
+   <property name="text">
+    <string>Rückgängig</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionNeu">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>Icons/mnNeu.png</normaloff>Icons/mnNeu.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Neu</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionLaden">
+   <property name="text">
+    <string>Ö&amp;ffnen</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionSpeichern">
+   <property name="text">
+    <string>&amp;Speichern</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionSchlie_en">
+   <property name="text">
+    <string>S&amp;chließen</string>
+   </property>
+  </action>
+  <action name="actionAusschneiden">
+   <property name="text">
+    <string>Ausschneiden</string>
+   </property>
+  </action>
+  <action name="actionKopieren">
+   <property name="text">
+    <string>Kopieren</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionEinf_gen">
+   <property name="text">
+    <string>Einfügen</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="actionL_schen">
+   <property name="text">
+    <string>Löschen</string>
+   </property>
+  </action>
+  <action name="actionImportieren">
+   <property name="text">
+    <string>&amp;Importieren</string>
+   </property>
+  </action>
+  <action name="actionExportieren">
+   <property name="text">
+    <string>Exportieren</string>
+   </property>
+  </action>
+  <action name="action3D_Fenster">
+   <property name="text">
+    <string>3D-Fenster</string>
+   </property>
+  </action>
+  <action name="actionLinienri">
+   <property name="text">
+    <string>Linienriß</string>
+   </property>
+  </action>
+  <action name="actionExportieren_2">
+   <property name="text">
+    <string>Exportieren</string>
+   </property>
+  </action>
+  <action name="actionProgrammversion">
+   <property name="text">
+    <string>Programmversion</string>
+   </property>
+  </action>
+  <action name="actionInit">
+   <property name="text">
+    <string>Init...</string>
+   </property>
+  </action>
+  <action name="actionShift_Element">
+   <property name="text">
+    <string>Shift Element</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Shift+S</string>
+   </property>
+  </action>
+  <action name="actionOriginal_Zuschnitte_Speichern">
+   <property name="text">
+    <string>Original Zuschnitte Speichern</string>
+   </property>
+  </action>
+  <action name="actionVerzerrte_Zuschnitte_Speichern">
+   <property name="text">
+    <string>Verzerrte Zuschnitte Speichern</string>
+   </property>
+  </action>
+  <action name="pluginPlaceholder">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>plugin</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionNeu_2">
+   <property name="text">
+    <string>Neu</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="0" margin="0"/>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>actionBeenden</sender>
+   <signal>triggered()</signal>
+   <receiver>MainForm</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>421</x>
+     <y>409</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
