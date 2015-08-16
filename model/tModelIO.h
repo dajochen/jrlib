@@ -37,17 +37,17 @@ private:
   QStringList fErrorMessages;
   tFunction funcs;
 
-  tVector vectorize(QString str);
+  //tVector vectorize(QString str);
   tRGB colorize(QString str);
-  QString resolveName(QString str);
+  //QString resolveName(QString str);
 protected:
   //writing functions:
   bool modelToXml(QDomElement m);
   void elementToXml(tElement *el, QDomDocument& doc, QDomElement& parentElement, QHash<tElement*, QString>& processedElements, QHash<QString, tElement*>& processedNames);
   //reading functions:
-  bool executeXml(QDomElement m,QHash<QString,tElement*> *elName=NULL,QHash<QString,QDomElement> *macro=NULL);
   bool executeXml_2xx(QDomElement job, tVersion version);
-  void executeFunctionSurfaceXml(tFunctionSurface *s, QDomElement el, QHash<QString,QDomElement> *macro);
+  //bool executeXml(QDomElement m,QHash<QString,tElement*> *elName=NULL,QHash<QString,QDomElement> *macro=NULL);
+  //void executeFunctionSurfaceXml(tFunctionSurface *s, QDomElement el, QHash<QString,QDomElement> *macro);
 
 public:
   tModelIO(tModel *m);

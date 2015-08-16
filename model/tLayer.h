@@ -85,6 +85,7 @@ public:
   virtual void removeElement(tElement *el, bool recursive=true);
 
   tElement* elementByName(const QString& name, const QString &type = "");
+  const tList<tElement*> elementsByName(const QRegularExpression &re, const QString &type ="");
 
   virtual tElement* addElement(const QString &type, const QString& name="");
   virtual tElement* addElement(tElement *el){return append(el);}

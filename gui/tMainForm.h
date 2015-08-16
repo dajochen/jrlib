@@ -22,8 +22,6 @@ class tMainForm : public QMainWindow, Ui::MainForm {
 
 private:
   QHash<tModelView *, tModel *> modelViews;
-  //QList<tModel*> Models;
-  //QList<tModelView*> Views;
   QMdiArea *Workspace;
 
   tPropertiesView *propertiesView;
@@ -74,7 +72,10 @@ public:
   ~tMainForm(void);
   QAction* pluginAction(QString caption);
   tModel* createEmptyModel(const QString& name = "");
+
   tModel* getActiveModel(void);
+  tSelectionSet* getActiveSelectionSet(void);
+
   bool importToModel(QString fileName, tModel *m, bool createDefaultLayerOnDemand=false);
   void openFile(const QString& fileName);
   void saveFile(const QString& fileName);
@@ -82,20 +83,12 @@ public:
 private slots:
   void on_actionLaden_triggered();
   void on_actionSpeichern_triggered();
-  //void on_actionOriginal_Zuschnitte_Speichern_triggered();
-  //void on_actionVerzerrte_Zuschnitte_Speichern_triggered();
   void on_actionImportieren_triggered();
   void on_actionExportieren_triggered();
   void on_actionKopieren_triggered();
   void on_actionEinf_gen_triggered();
-  //  void on_actionNeu_triggered();
-  //void on_actionInit_triggered();
   void on_actionProgrammversion_triggered();
   void on_actionR_ckg_ngig_triggered();
-  //void actionOrthogonal_toggeled (bool checked);
-  //void actionPerspective_toggeled (bool checked);
-  //void actionFlightMode_toggeled (bool checked);
-  //void actionObjectMode_toggeled (bool checked);
   void on_menuRecent_Files_triggered(QAction *action);
   void windowActivated(QMdiSubWindow *w);
 public slots:

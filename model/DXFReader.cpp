@@ -55,9 +55,9 @@ int DXFReader::getElementCounter(const QString &type){
 void DXFReader::addSpline(const DL_SplineData &splData){
     tLayer *l = model->currentLayer();
     if (l){
-        int flags = splData.flags;
-        int nKnots = splData.nKnots;
-        int nControl = splData.nControl;
+        //int flags = splData.flags;
+        //int nKnots = splData.nKnots;
+        //int nControl = splData.nControl;
 
 
         tDxfSpline *spl = dynamic_cast<tDxfSpline*>(l->addElement(iDxfSpline::theType()));

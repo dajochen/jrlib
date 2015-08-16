@@ -155,6 +155,33 @@ void tLayer::removeElement(tElement *el, bool recursive)
   }
 }
 //-----------------------------------------------------------------------------
+/**
+ * Looks for an element called <name> which is of the type <type>
+ */
+const tList<tElement*> tLayer::elementsByName(const QRegularExpression &re, const QString &type)
+{
+    setElementLocked
+    int i;
+    tList<tElement*> found;
+
+  for (i=nElements()-1;i>=0;i--){
+    tElement *e = element(i);
+    iElement *iface = e->intrface();
+
+    if (re.match(iface->name()).hasMatch()){
+        if (type.isEmpty() || iface->isOfType(type)){
+                found.append(e);
+        }
+    }
+    tLayer* l = dynamic_cast<tLayer*>(e);
+    if (l){
+      found.append( l->elementsByName(re, type) );
+    }
+  }
+
+  return found;
+}
+//-----------------------------------------------------------------------------
 
 /**
  * Looks for an element called <name> which is of the type <type>

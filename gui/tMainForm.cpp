@@ -8,18 +8,9 @@
 #include <string.h>
 
 #include "model/tModelIO.h"
-
-#include "element/curve/tDistortedSpline.h"
 #include "model/DXFReader.h"
-#include "model/tPatExport.h"
-#include "model/tPclExport.h"
-#include "model/tAbaqusMesh.h"
-#include "model/tStlExport.h"
-#include "model/tDxfExport2.h"
-#include "model/tVtkExport.h"
-#include "model/tFreeShipExport.h"
+#include "model/export/tExporterTool.h"
 
-//#include "model/dxfTools.h"
 
 #include "views/jrgui.h"
 #include "views/tGLModelView.h"
@@ -34,30 +25,6 @@
 
 tMainForm::tMainForm(QMainWindow *parent): QMainWindow(parent)
 {
-  QStringList args;
-  args = QApplication::arguments();
-
-  if (args.contains("-h")){
-    QMessageBox ibox(QMessageBox::Information, "info", "Options are:\n      -nogui\n      -quit\n      -h\n      <filename>\n      <filename>\n      <filename>\n\ne.g.: cad -nogui test.jr -quit", QMessageBox::Ok);
-    ibox.exec();
-    exit(0);
-  } else if (args.contains("-nogui")){
-    args.removeAll("-nogui");
-    tModel *model;
-    tModelIO *IO;
-    model = new tModel(this);
-    IO = new tModelIO(model);
-    for (int i=1;i<args.count();i++){
-      if (args.at(i)=="-quit"){
-        exit(0);
-      } else {
-        IO->fromXmlFile(args.at(i));
-      }
-    }
-    delete IO;
-    model->releaseOwner(this);
-    exit(0);
-  } else {
     setupUi(this);
 
     Workspace = new QMdiArea(this);
@@ -99,15 +66,6 @@ tMainForm::tMainForm(QMainWindow *parent): QMainWindow(parent)
     copyPasteSelection = new tGroup(this);
 
     updateSettings();
-
-    for (int i=1;i<args.count();i++){
-      if (args.at(i)=="-quit"){
-        exit(0);
-      } else {
-        openFile(args.at(i));
-      }
-    }
-  }
 }
 //-----------------------------------------------------------------------------
 
@@ -291,75 +249,16 @@ void tMainForm::windowActivated(QMdiSubWindow *subWidget)
   }
 }
 //-----------------------------------------------------------------------------
+void tMainForm::on_actionNeu_triggered()
+{
+  createEmptyModel();
+}
+//-----------------------------------------------------------------------------
 
 void tMainForm::on_actionExportieren_triggered()
 {
-	QString fname;
-	tModel *M;
-
-  M = getActiveModel();
-  if (M){
-    QStringList extensions;
-#ifdef BUILD_WITH_DXFLIB
-    extensions.append("DXF (*.dxf)");
-#endif
-    extensions.append("ISThydro (*.pcl)");
-    extensions.append("Visualization Toolkit (VTK) (*.vts)");
-    extensions.append("StereoLithography (*.stl)");
-    extensions.append("Abqus Input File (*.inp)");
-    extensions.append("MultiSurf (*.pat)");
-    extensions.append("Free Ship Input File (*.freeShipInput)");
-    extensions.append("All Files (*.*)");
-
-    QString filter = "*.*";
-#ifdef BUILD_WITH_DXFLIB
-    filter = "*.dxf";
-#endif
-
-    fname = QFileDialog::getSaveFileName(this,"Geometriedaten exportieren",
-                                              "\\",extensions.join(";;"),&filter);
-
-    if (!fname.isNull()) {
-      if (fname.endsWith(".pat",Qt::CaseInsensitive)) {
-        tPatExport pat;
-        pat.exportToFile(fname,M);
-      } else if (fname.endsWith(".pcl",Qt::CaseInsensitive)) {
-        tPclExport pcl;
-        pcl.exportToFile(fname,M);
-      } else if (fname.endsWith(".inp",Qt::CaseInsensitive)) {
-        tAbaqusMesh abq;
-        abq.exportToFile(fname,M);
-      } else if (fname.endsWith(".stl",Qt::CaseInsensitive)) {
-        tStlExport stl;
-        stl.exportToFile(fname,M);
-#ifdef BUILD_WITH_VTK
-      } else if (fname.endsWith(".vts",Qt::CaseInsensitive)) {
-        tVtkExport(fname,M);
-#endif
-#ifdef BUILD_WITH_DXFLIB
-      } else if (fname.endsWith(".dxf",Qt::CaseInsensitive)) {
-          tGLModelView *glView = NULL;
-          tSelectionSet *selSet = NULL;
-          tBasicPlane* plane = NULL;
-          QMdiSubWindow *window = Workspace->currentSubWindow();
-          if (window) glView = dynamic_cast<tGLModelView*>(window->widget());
-          if (glView) selSet = glView->selectionSet(this);
-          if (selSet && selSet->nElements()>0) {
-              plane = dynamic_cast<tBasicPlane*>(selSet->element(0));
-          }
-
-          tDxfExport2 dxf(fname, M, plane);
-/*        dxf.addElements(M->elements());
-          dxf.exportToFile(fname);*/
-#endif
-      } else if (fname.endsWith(".freeShipInput",Qt::CaseInsensitive)) {
-        tFreeShipExport fs;
-        fs.exportToFile(fname, M);
-      }
-    }
-  } else {
-    QMessageBox::information(this, "Export", "No model active. Nothing to be done.", QMessageBox::Ok);
-  }
+    tExporterTool exporter(getActiveModel(), getActiveSelectionSet());
+    exporter.exportToFile(exporter.selectExportFile(this));
 }
 //-----------------------------------------------------------------------------
 void tMainForm::on_actionKopieren_triggered()
@@ -399,8 +298,6 @@ void tMainForm::on_actionEinf_gen_triggered()
       }
 
       for (int i=0;i<copyPasteSelection->nElements(); i++){
-  //      char dbg[500];
-  //      strcpy(dbg,qPrintable(copyPasteSelection->element(i)->intrface()->name()));
         M->currentLayer()->addDeepCopy(copyPasteSelection->element(i), options);
       }
     }
@@ -583,344 +480,6 @@ void tMainForm::on_actionSpeichern_triggered()
                                         "jrCAD xml-File (*.jr)"));
 }
 //-----------------------------------------------------------------------------
-/*
-void tMainForm::on_actionOriginal_Zuschnitte_Speichern_triggered()
-{
- exportCuttings("Initial Cutting");
-}
-//-----------------------------------------------------------------------------
-
-void tMainForm::on_actionVerzerrte_Zuschnitte_Speichern_triggered()
-{
-  exportCuttings("Arranged Cutting");
-}*/
-//-----------------------------------------------------------------------------
-/*
-void tMainForm::exportCuttings(QString type)
-{
-  QString defaultFile;
-  if (lastSavedFile==""){
-    defaultFile = QDir::homePath();
-  } else {
-    defaultFile = lastSavedFile;
-  }
-  QString baseName = QFileDialog::getSaveFileName(this,
-                                          "Zuschitte speichern, Basisdateinamen wählen",
-                                          defaultFile,
-                                          "DXF-File (*.dxf)");
-
-  QString log;
-
-  tModel *model = getActiveModel();
-  if (model){
-    //????tGroup* group = new tGroup(this);
-    //group->setElements( model->selection() );
-
-    tLayer* top = dynamic_cast<tLayer*>(model->elementByName("PropGeo - Cutting File", iLayer::theType()));
-    if (top){
-      tList<tElement*> compounds = top->elements(iLayer::theType());
-      for (int i=0;i<compounds.count();i++){
-        tLayer* comp = dynamic_cast<tLayer*>(compounds.at(i));
-        tLayer* cutting = dynamic_cast<tLayer*>(comp->elementByName(type,iLayer::theType()));
-        if (cutting){
-          log += "Processing Cutting: " + type + " to file: " + baseName + "...dxf\n";
-
-          tList<tElement*> fabrics = cutting->elements(iLayer::theType());
-
-          for (int j=0; j<fabrics.count(); j++){
-            //model->setSelection(fabrics.at(j));
-            tLayer* fabric = dynamic_cast<tLayer*>(fabrics.at(j));
-            QString fileName = baseName + "_" + comp->intrface()->name() + "_" + fabric->intrface()->name() + ".dxf";
-            log += "writing: " + fileName + "\n";
-
-            tDxfExport dxf;
-
-            dxf.defaultLayer = "CUT";
-            dxf.addElement(fabric);
-
-            dxf.defaultLayer = "TEXT";
-            tList<tElement*> offsets = fabric->elements(iLayer::theType());
-            for (int k=0; k<offsets.count(); k++ ){
-
-              tLayer *l = dynamic_cast<tLayer*>(offsets.at(k));
-              if (l){
-                dxf.addText( l->intrface()->name(),
-                             (l->xMin()+l->xMax())*0.5 );
-
-                tLayer *contur = dynamic_cast<tLayer*>(l->elementByName("Contur", iLayer::theType()));
-                if (contur){
-                  tList<tElement*> list = contur->elements(iCurve::theType());
-                  tCurve *c = dynamic_cast<tCurve*>(list.at(0));
-                  if (c){
-                    int tRes = c->tResolution();
-                    double area = 0.;
-                    tVector x0, x;
-                    x0 = c->vectorAt(0.);
-                    for (int i=1; i<=tRes; i++){
-                      double t = double(i)/double(tRes);
-                      x = c->vectorAt(t);
-                      area += 0.5*( ( x.x+x0.x ) * (x.y-x0.y ) ) / 1.0e6;
-                      x0 = x;
-                    }
-                    log += "Layer: " + l->intrface()->name() + ": Area: " + QString::number(area)+ "\n";
-                  }
-                }
-              }
-
-            }
-
-            dxfPoint xMin = dxf.content().getBoundingBox().Min();
-            xMin.x *= -1;
-            xMin.y *= -1;
-            dxf.content().shift(xMin.x, xMin.y);
-
-            dxf.exportToFile(fileName);
-            {
-              QString defaultFile;
-              if (lastSavedFile==""){
-                defaultFile = QDir::homePath();
-              } else {
-                defaultFile = lastSavedFile;
-              }
-              QString baseName = QFileDialog::getSaveFileName(this,
-                                                      "Zuschitte speichern, Basisdateinamen wählen",
-                                                      defaultFile,
-                                                      "DXF-File (*.dxf)");
-
-              QString log;
-
-              tModel *model = getActiveModel();
-              if (model){
-                //????tGroup* group = new tGroup(this);
-                //group->setElements( model->selection() );
-
-                tLayer* top = dynamic_cast<tLayer*>(model->elementByName("PropGeo - Cutting File", iLayer::theType()));
-                if (top){
-                  tList<tElement*> compounds = top->elements(iLayer::theType());
-                  for (int i=0;i<compounds.count();i++){
-                    tLayer* comp = dynamic_cast<tLayer*>(compounds.at(i));
-                    tLayer* cutting = dynamic_cast<tLayer*>(comp->elementByName(type,iLayer::theType()));
-                    if (cutting){
-                      log += "Processing Cutting: " + type + " to file: " + baseName + "...dxf\n";
-
-                      tList<tElement*> fabrics = cutting->elements(iLayer::theType());
-
-                      for (int j=0; j<fabrics.count(); j++){
-                        //model->setSelection(fabrics.at(j));
-                        tLayer* fabric = dynamic_cast<tLayer*>(fabrics.at(j));
-                        QString fileName = baseName + "_" + comp->intrface()->name() + "_" + fabric->intrface()->name() + ".dxf";
-                        log += "writing: " + fileName + "\n";
-
-                        tDxfExport dxf;
-
-                        dxf.defaultLayer = "CUT";
-                        dxf.addElement(fabric);
-
-                        dxf.defaultLayer = "TEXT";
-                        tList<tElement*> offsets = fabric->elements(iLayer::theType());
-                        for (int k=0; k<offsets.count(); k++ ){
-
-                          tLayer *l = dynamic_cast<tLayer*>(offsets.at(k));
-                          if (l){
-                            dxf.addText( l->intrface()->name(),
-                                         (l->xMin()+l->xMax())*0.5 );
-
-                            tLayer *contur = dynamic_cast<tLayer*>(l->elementByName("Contur", iLayer::theType()));
-                            if (contur){
-                              tList<tElement*> list = contur->elements(iCurve::theType());
-                              tCurve *c = dynamic_cast<tCurve*>(list.at(0));
-                              if (c){
-                                int tRes = c->tResolution();
-                                double area = 0.;
-                                tVector x0, x;
-                                x0 = c->vectorAt(0.);
-                                for (int i=1; i<=tRes; i++){
-                                  double t = double(i)/double(tRes);
-                                  x = c->vectorAt(t);
-                                  area += 0.5*( ( x.x+x0.x ) * (x.y-x0.y ) ) / 1.0e6;
-                                  x0 = x;
-                                }
-                                log += "Layer: " + l->intrface()->name() + ": Area: " + QString::number(area)+ "\n";
-                              }
-                            }
-                          }
-
-                        }
-
-                        dxfPoint xMin = dxf.content().getBoundingBox().Min();
-                        xMin.x *= -1;
-                        xMin.y *= -1;
-                        dxf.content().shift(xMin.x, xMin.y);
-
-                        dxf.exportToFile(fileName);
-
-                      }
-                    }
-
-                  }
-                }
-
-                //model->selection()->setElements( group->elements() );
-                //group->releaseOwner(this);
-              }
-
-              QMessageBox mb(QMessageBox::Information, "Export Info:", "Expand for details", QMessageBox::Ok);
-              mb.setDetailedText(log);
-              mb.exec();
-
-            }
-          }
-        }
-
-      }
-    }
-
-    //model->selection()->setElements( group->elements() );
-    //group->releaseOwner(this);
-  }
-
-  QMessageBox mb(QMessageBox::Information, "Export Info:", "Expand for details", QMessageBox::Ok);
-  mb.setDetailedText(log);
-  mb.exec();
-
-}*/
-//-----------------------------------------------------------------------------
-
-void tMainForm::on_actionNeu_triggered()
-{
-  createEmptyModel();
-}
-//-----------------------------------------------------------------------------
-/*
-void tMainForm::on_actionInit_triggered()
-{
-
-  tModel* model = getActiveModel();
-  if (model){
-    tLayer *dxfInput = model->addLayer("dxf-Rein");
-    tLayer *dxfOutput = model->addLayer("dxf-Raus");
-    tLayer *meshIn = model->addLayer("Basis");
-    tLayer *meshOut = model->addLayer("Verzerrung");
-
-    model->setCurrentLayer(dxfInput);
-
-    QString defaultFile;
-    if (recentlyOpenedFiles.count()==0){
-      defaultFile = QDir::homePath();
-    } else {
-      defaultFile = recentlyOpenedFiles.first();
-    }
-    importToModel(QFileDialog::getOpenFileName(this,
-                                          "DXF-Kontur",
-                                          defaultFile,
-                                          "Draw Exchange Format (*.dxf)"),
-                  model);
-
-    tList<tHermiteSpline*> splList;
-    for (int i=0; i<dxfInput->nElements(); i++){
-      tHermiteSpline *spl = dynamic_cast<tHermiteSpline*>(dxfInput->element(i));
-      if (spl){
-        splList.append(spl);
-      }
-    }
-
-    tVector xMin, xMax;
-    for (int i=0; i<splList.count(); i++){
-      tVector x;
-      x = splList.at(i)->xMin();
-      if (i==0){
-        xMin = x;
-      } else {
-        xMin = tVector(min(x.x, xMin.x), min(x.y, xMin.y), min(x.z, xMin.z));
-      }
-
-      x = splList.at(i)->xMax();
-      if (i==0){
-        xMax = x;
-      } else {
-        xMax = tVector(max(x.x, xMax.x), max(x.y, xMax.y), max(x.z, xMax.z));
-      }
-    }
-
-    //Mesh In
-    tPoint* p[4];
-    p[0] = meshIn->addPoint(xMin);
-    p[1] = meshIn->addPoint(xMin + tVector(1,0,0) * ((xMax-xMin)*tVector(1,0,0)));
-    p[2] = meshIn->addPoint(xMin + tVector(0,1,0) * ((xMax-xMin)*tVector(0,1,0)));
-    p[3] = meshIn->addPoint(xMax);
-
-    tLine *l0, *l1;
-    l0 = meshIn->addLine(p[0], p[1]);
-    l1 = meshIn->addLine(p[2], p[3]);
-
-    tSurface* inFace = meshIn->addRuled(l0, l1);
-
-    tGroup *gIn = meshIn->addGroup();
-    gIn->intrface()->setName("Input mesh group");
-    gIn->append(inFace);
-    //-----------------
-
-    //Mesh Out
-    tRelPoint* r[4];
-    r[0] = meshOut->addRelPoint(p[0], tVector(0,xMax.y-xMin.y,0));
-    r[1] = meshOut->addRelPoint(p[1], tVector(0,xMax.y-xMin.y,0));
-    r[2] = meshOut->addRelPoint(p[2], tVector(0,xMax.y-xMin.y,0));
-    r[3] = meshOut->addRelPoint(p[3], tVector(0,xMax.y-xMin.y,0));
-    l0 = meshOut->addLine(r[0], r[1]);
-    l1 = meshOut->addLine(r[2], r[3]);
-    tSurface* outFace = meshOut->addRuled(l0, l1);
-
-    tGroup *gOut = meshOut->addGroup();
-    gOut->intrface()->setName("Output mesh group");
-    gOut->append(outFace);
-    //-------
-
-
-    for (int i=0; i<splList.count(); i++){
-      tHermiteSpline *splIn = splList.at(i);
-
-      tDistortedSpline *splOut = dynamic_cast<tDistortedSpline*>(dxfOutput->addElement(iDistortedSpline::theType()));
-      splOut->setBaseSpline(splIn);
-      splOut->setBaseFaces(gIn);
-      splOut->setDistortedFaces(gOut);
-
-//      tHermiteSpline *splOut = dxfOutput->addHermiteSpline();
-//      splOut->setTResolution(100);
-//      splOut->intrface()->setName(splIn->intrface()->name());
-//
-//      tLayer* subLayer;
-//      subLayer = dynamic_cast<tLayer*>(dxfOutput->addElement(iLayer::theType()));
-//      subLayer->intrface()->setName(splIn->intrface()->name()+"_vertices");
-//      subLayer->intrface()->setVisibility(false);
-//
-//      tList<tElement*> pInList = splIn->vertices(),
-//                       pOutList;
-//
-//      for (int j=0; j<pInList.count(); j++){
-//        tPoint *d = dynamic_cast<tPoint*>(pInList.at(j));
-//        if (d){
-//          tStickyMagnet* sMag = new tStickyMagnet(NULL);
-//          sMag->setReferenceDot(d);
-//          sMag->addStickyFace(inFace);
-//
-//          tAbsMagnet* aMag = dynamic_cast<tAbsMagnet*>(subLayer->addElement(iAbsMagnet::theType()));
-//          aMag->intrface()->setName(d->intrface()->name());
-//          aMag->setReference(outFace);
-//
-//          bool ok;
-//          new tPropertyLinker(aMag, "uPosition",
-//                              sMag, "uPosition", &ok);
-//          new tPropertyLinker(aMag, "vPosition",
-//                              sMag, "vPosition", &ok);
-//          pOutList.append(aMag);
-//        }
-//      }
-//      splOut->setVertices(pOutList);
-    }
-
-  }
-}*/
-//-----------------------------------------------------------------------------
 
 void tMainForm::on_actionR_ckg_ngig_triggered()
 {
@@ -1060,72 +619,33 @@ tModel* tMainForm::createEmptyModel(const QString& name)
 
 tModel* tMainForm::getActiveModel(void)
 {
-  tGLModelView *activeView = NULL;
+  tGLModelView *glv = NULL;
   QMdiSubWindow *window = Workspace->currentSubWindow();
   if (window){
-    activeView = dynamic_cast<tGLModelView*>(window->widget());
-    if (activeView){
-      return activeView->model();
+    glv = dynamic_cast<tGLModelView*>(window->widget());
+    if (glv){
+      return glv->model();
     }
   } else {
     return NULL;
   }
   return NULL;
 }
-
 //-----------------------------------------------------------------------------
-/*
- *void tMainForm::on_command_returnPressed(void)
+
+tSelectionSet* tMainForm::getActiveSelectionSet(void)
 {
-  int i;
-  QStringList cmdList,l;
-  QString cmd;
-  bool splitAtSpaces = true;
+  tGLModelView *glv = NULL;
+  QMdiSubWindow *window = Workspace->currentSubWindow();
+  if (window){
+    glv = dynamic_cast<tGLModelView*>(window->widget());
+    if (glv){
 
-  tConnectiveModel *model;
-  tModelCommand modelCmd;
-
-  cmd = command->text();
-  cmd.replace("\"","\"\""); //Gaensefuesschen beruecksichtigen
-  l = cmd.split("\"",QString::KeepEmptyParts);
-  for (i=0;i<l.count();i++){
-    if (l.at(i) == ""){
-      splitAtSpaces = !splitAtSpaces;
-    } else {
-      if (splitAtSpaces){
-        cmdList << l.at(i).split(QRegExp("\\s+"),QString::SkipEmptyParts);
-      } else {
-        cmdList << l.at(i);
-      }
+        return glv->selectionSet(this);
     }
-  }
-  cmd = cmdList[0].toLower();
-  if (cmd.startsWith("!") || cmd.startsWith("#") || cmd.startsWith("//")){
-    // Kommentar
-    cmd = command->text();
   } else {
-    if (cmd.toLower() == "new"){
-      if (cmdList.count() > 1){
-        createEmptyModel(cmdList[1]);
-        cmd += " \""+cmdList[1]+"\"";
-      } else {
-        createEmptyModel();
-      }
-    } else if (cmd == "exit"){
-      close();
-      cmd = "exit ";
-    } else {
-    	model = getActiveModel();
-      if (model) {
-        modelCmd.setModel(model);
-        cmd = modelCmd.execute(cmdList);
-      } else {
-        cmd = "!Error: unknown command or no active workspace";
-      }
-    }
+    return NULL;
   }
-  lastCommands->append(cmd);
-  command->setText("");
-  command->setFocus(Qt::OtherFocusReason);
-}*/
+  return NULL;
+}
 //-----------------------------------------------------------------------------

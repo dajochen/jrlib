@@ -27,7 +27,7 @@ tString iLinkedElement::getPropertyName(int index)
 }
 //-----------------------------------------------------------------------------
 
-tString iLinkedElement::getPropertyType(int index)
+tString iLinkedElement::getPropertyType(unsigned int index)
 {
   if (linkedObjectIFace() && index >= nProperties()-nLinkedElementProperties()){
     return linkedObjectIFace()->getPropertyType(index - (nProperties()-nLinkedElementProperties()));

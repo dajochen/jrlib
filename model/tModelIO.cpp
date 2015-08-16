@@ -3,6 +3,10 @@
 #include "model/tPclExport.h"
 #include "element/surface/tPropSurface.h"
 #include "classes/tVectorStringConverter.h"
+
+#ifdef BUILD_WITH_DXFLIB
+    #include "model/tDxfExport2.h"
+#endif
 //#include "element/tPropertyLinker.h"
 #include <stdio.h>
 
@@ -28,7 +32,7 @@ tModelIO::~tModelIO()
 {
 }
 //-----------------------------------------------------------------------------
-
+/*
 tVector tModelIO::vectorize(QString str){
 	QStringList Vector;
 	tVector x;
@@ -45,7 +49,7 @@ tVector tModelIO::vectorize(QString str){
 		*x[i] = value;
   }
   return x;
-}
+}*/
 //-----------------------------------------------------------------------------
 
 tRGB tModelIO::colorize(QString str){
@@ -125,8 +129,7 @@ bool tModelIO::fromXmlElement(const QDomElement& el, QHash<QString,tElement*> *e
   if (version.branch() >= 2){
     ok = executeXml_2xx(el, version);
   } else {
-    model->setCurrentLayer(model->addLayer("Default Layer"));
-    ok = executeXml(el,elName, macro);
+    ok = false;
   }
   return (ok);
 }
@@ -368,10 +371,6 @@ bool tModelIO::executeXml_2xx(QDomElement job, tVersion version)
     elName = el.attribute("name","");
     e = defaultImportLayer->addElement(elType, elName);
 
-
-    char dbg[500];
-    strcpy(dbg,qPrintable(elName));
-
     if (e){
       intrface = e->intrface();
       intrface->setName(elName);
@@ -386,8 +385,6 @@ bool tModelIO::executeXml_2xx(QDomElement job, tVersion version)
         // Die Eigenschaften abarbeiten
         propName = propEl.tagName();
 
-        char dbg[500];
-        strcpy(dbg,propName.toLatin1().data());
 
         propIndex = intrface->getPropertyIndex(propName);
         if (propIndex>=0){
@@ -532,7 +529,7 @@ bool tModelIO::executeXml_2xx(QDomElement job, tVersion version)
   return true;
 }
 //-----------------------------------------------------------------------------
-
+/*
 bool tModelIO::executeXml(QDomElement mm,
 													QHash<QString,tElement*> *elName,
 													QHash<QString,QDomElement> *macro){
@@ -647,8 +644,6 @@ bool tModelIO::executeXml(QDomElement mm,
 						refs[i] = resolveName(refs.at(i));
 						if (!elName->contains(refs.at(i))) {
 						  tElement *el;
-              char dbg[500];
-              strcpy(dbg,refs.at(i).toLatin1().data());
 						  el = model->currentLayer()->elementByName(refs.at(i));
 						  if(el){
 						    elName->insert(refs.at(i),el);
@@ -664,8 +659,6 @@ bool tModelIO::executeXml(QDomElement mm,
 						type = tag.tagName();
 
 	  				name = resolveName(tag.attribute("name"));
-	  				char dbg[255];
-	  				strcpy(dbg, name.toLatin1().data());
 
 						tag1 = tag.firstChildElement("color");
 						rgb = colorize(tag1.attribute("rgb","255 255 0"));
@@ -969,33 +962,7 @@ bool tModelIO::executeXml(QDomElement mm,
               s = model->currentLayer()->addFunctionSurface();
               s->addReference(ref1,ref1->intrface()->getPropertyString("name"));
               executeFunctionSurfaceXml((tFunctionSurface*)s, tag, macro);
-								/*tag1 = tag.firstChildElement();
-								while (!tag1.isNull()){
-									if (tag1.tagName() == "function" || tag1.tagName() == "math"){
-                    if (tag1.hasAttribute("string")){
-                      s->setFunction(tag1.attribute("string",""));
-                    } else if (tag2.hasAttribute("math")){
-                      s->setFunction(tag1.attribute("func",""));
-                    }
-									} else if (tag1.tagName() == "call"){
-										macroName = resolveName(tag1.attribute("macro",""));
-										macroEl = macro->value(macroName);
-										if (!macroEl.isNull()){
-											tag2 = macroEl.firstChildElement();
-											while (!tag2.isNull()){
-                        if (tag2.tagName() == "function" || tag2.tagName() == "math"){
-                          if (tag2.hasAttribute("string")){
-												    s->setFunction(tag2.attribute("string",""));
-                          } else if (tag2.hasAttribute("func")){
-                            s->setFunction(tag2.attribute("func",""));
-                          }
-                        }
-												tag2 = tag2.nextSiblingElement();
-											}
-										}									}
 
-									tag1 = tag1.nextSiblingElement();
-								}*/
 								e = s;
 								tagIsHandled = true;
 //						} else if (type == "RevolvedSurface"){
@@ -1113,29 +1080,6 @@ bool tModelIO::executeXml(QDomElement mm,
 								}
 								tag1 = tag1.nextSiblingElement();
 							} while (!tag1.isNull());
-/*            } else if (type == "pff"){
-              QString fileName;
-              tpff *pff;
-              int ni,nj;
-              nj = (int)tag.attribute("radialRes","19").toFloat();
-              ni = (int)tag.attribute("profileRes","16").toFloat();
-              fileName = tag.attribute("file","");
-              pff = new tpff(model);
-              model->currentLayer()->addElement(pff);
-              pff->setRadialRes(nj);
-              pff->setProfileRes(ni);
-              if (tag.attribute("bladeTipType","open")=="rounded"){
-                pff->setBladeTipType(jrBTTrounded);
-              } else {
-                pff->setBladeTipType(jrBTTopen);
-              }
-              QFileInfo fi(fileName);
-              if (!fi.isAbsolute()){
-                fi.setFile(currentFileName);
-                fileName = fi.absolutePath()+"/"+fileName;
-              }
-              pff->openPff(fileName);
-              tagIsHandled = true;  */
             } else if (type == "Structured2DInterpolGrid"){
               tStructured2DInterpolGrid *grid;
               QString distribOnEdge, refName;
@@ -1257,6 +1201,12 @@ bool tModelIO::executeXml(QDomElement mm,
                 } else if (expType == "ISThydro"){
                   tPclExport toPcl;
                   toPcl.exportToFile(expFile,model);
+#ifdef BUILD_WITH_DXFLIB
+                 } else if (expType.toLower() == "dxf") {
+                  tBasicPlane* plane = NULL;
+                  plane = dynamic_cast<tBasicPlane*>(model->elementByName(tag.attribute("plane",iBasicPlane::theType())));
+                  tDxfExport2 dxf(expFile, model, plane);
+#endif
                 }
               }
             } else {
@@ -1272,8 +1222,6 @@ bool tModelIO::executeXml(QDomElement mm,
                 while (!propEl.isNull()){
                   // Die Eigenschaften abarbeiten
                   propName = propEl.tagName();
-                  char dbg[500];
-                  strcpy(dbg,propName.toLatin1().data());
                   propIndex = intrface->getPropertyIndex(propName);
                   if (propIndex>=0){
                     propType = intrface->getPropertyType(propIndex);
@@ -1334,9 +1282,6 @@ bool tModelIO::executeXml(QDomElement mm,
                       // alle anderen tElement-Typen
                       QString refName;
                       refName = propEl.attribute(propType,"");
-                      char dbg[800];
-                      strcpy(dbg, refName.toLatin1().data());
-                      strcpy(dbg, propType.toLatin1().data());
                       if (elName->contains(refName)){
                         tElement *el;
                         el = elName->value(refName);
@@ -1417,23 +1362,19 @@ bool tModelIO::executeXml(QDomElement mm,
 void tModelIO::executeFunctionSurfaceXml(tFunctionSurface *s, QDomElement el, QHash<QString,QDomElement> *macro){
   QString macroName;
   QDomElement tag, macroEl;
-  char dbg[200];
 
   tag = el.firstChildElement();
   while (!tag.isNull()){
     if (tag.tagName() == "function" || tag.tagName() == "math"){
       if (tag.hasAttribute("string")){
-        strcpy(dbg,tag.attribute("string","").toLatin1().data());
         s->addFunction(tag.attribute("string",""));
       } else if (tag.hasAttribute("func")){
-        strcpy(dbg,tag.attribute("func","").toLatin1().data());
         s->addFunction(tag.attribute("func",""));
       }
     } else if (tag.tagName() == "call"){
       macroName = resolveName(tag.attribute("macro",""));
       macroEl = macro->value(macroName);
       if (!macroEl.isNull()){
-        strcpy(dbg,tag.attribute("macro","").toLatin1().data());
         executeFunctionSurfaceXml(s, macroEl, macro);
       }
     }
@@ -1463,5 +1404,5 @@ QString tModelIO::resolveName(QString str){
 		}
 	}
 	return result;
-}
+}*/
 //-----------------------------------------------------------------------------

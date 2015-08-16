@@ -28,52 +28,59 @@ unix {
         INCLUDEPATH += /usr/include/dxflib
     }
     BUILD_WITH_VTK {
+        VTK_VERSION=6.1
         DEFINES += BUILD_WITH_VTK
 #        DEFINES += vtkRenderingCore_AUTOINIT 4(vtkInteractionStyle,vtkRenderingFreeType,vtkRenderingFreeTypeOpenGL,vtkRenderingOpenGL)
 #        DEFINES += vtkRenderingVolume_AUTOINIT 1(vtkRenderingVolumeOpenGL)
 #define vtkRenderingCore_AUTOINIT 4(vtkInteractionStyle,vtkRenderingFreeType,vtkRenderingFreeTypeOpenGL,vtkRenderingOpenGL)
 #define vtkRenderingVolume_AUTOINIT 1(vtkRenderingVolumeOpenGL)
 
-        LIBS += -L${VTK_ROOT}/build/lib \
-                -lvtkalglib-6.2 -lvtkChartsCore-6.2 -lvtkTestingRendering-6.2 -lvtkCommonColor-6.2 -lvtkCommonComputationalGeometry-6.2 -lvtkCommonCore-6.2 -lvtkCommonDataModel-6.2 \
-                -lvtkCommonExecutionModel-6.2 -lvtkCommonMath-6.2 -lvtkCommonMisc-6.2 -lvtkCommonSystem-6.2 -lvtkCommonTransforms-6.2 -lvtkDICOMParser-6.2 \
-                -lvtkDomainsChemistry-6.2 -lvtkexoIIc-6.2 -lvtkexpat-6.2 -lvtkFiltersAMR-6.2 -lvtkFiltersCore-6.2 -lvtkFiltersExtraction-6.2 -lvtkFiltersFlowPaths-6.2 \
-                -lvtkFiltersGeneral-6.2 -lvtkFiltersGeneric-6.2 -lvtkFiltersGeometry-6.2 -lvtkFiltersHybrid-6.2 -lvtkFiltersHyperTree-6.2 -lvtkFiltersImaging-6.2 \
-                -lvtkFiltersModeling-6.2 -lvtkFiltersParallel-6.2 -lvtkFiltersParallelImaging-6.2 -lvtkFiltersProgrammable-6.2 -lvtkFiltersSelection-6.2 -lvtkFiltersSMP-6.2 \
-                -lvtkFiltersSources-6.2 -lvtkFiltersStatistics-6.2 -lvtkFiltersTexture-6.2 -lvtkFiltersVerdict-6.2 -lvtkfreetype-6.2 -lvtkftgl-6.2 -lvtkGeovisCore-6.2 \
-                -lvtkgl2ps-6.2 -lvtkhdf5-6.2 -lvtkhdf5_hl-6.2 -lvtkImagingColor-6.2 -lvtkImagingCore-6.2 -lvtkImagingFourier-6.2 -lvtkImagingGeneral-6.2 -lvtkImagingHybrid-6.2 \
-                -lvtkImagingMath-6.2 -lvtkImagingMorphological-6.2 -lvtkImagingSources-6.2 -lvtkImagingStatistics-6.2 -lvtkImagingStencil-6.2 -lvtkInfovisCore-6.2 \
-                -lvtkInfovisLayout-6.2 -lvtkInteractionImage-6.2 -lvtkInteractionStyle-6.2 -lvtkInteractionWidgets-6.2 -lvtkIOAMR-6.2 -lvtkIOCore-6.2 -lvtkIOEnSight-6.2 \
-                -lvtkIOExodus-6.2 -lvtkIOExport-6.2 -lvtkIOGeometry-6.2 -lvtkIOImage-6.2 -lvtkIOImport-6.2 -lvtkIOInfovis-6.2 -lvtkIOLegacy-6.2 -lvtkIOLSDyna-6.2 -lvtkIOMINC-6.2 \
-                -lvtkIOMovie-6.2 -lvtkIONetCDF-6.2 -lvtkIOParallel-6.2 -lvtkIOParallelXML-6.2 -lvtkIOPLY-6.2 -lvtkIOSQL-6.2 -lvtkIOVideo-6.2 -lvtkIOXML-6.2 -lvtkIOXMLParser-6.2 \
-                -lvtkjpeg-6.2 -lvtkjsoncpp-6.2 -lvtklibxml2-6.2 -lvtkmetaio-6.2 -lvtkNetCDF-6.2 -lvtkNetCDF_cxx-6.2 -lvtkoggtheora-6.2 -lvtkParallelCore-6.2 -lvtkpng-6.2 -lvtkproj4-6.2 \
-                -lvtkRenderingAnnotation-6.2 -lvtkRenderingContext2D-6.2 -lvtkRenderingContextOpenGL-6.2 -lvtkRenderingCore-6.2 -lvtkRenderingFreeType-6.2 \
-                -lvtkRenderingFreeTypeOpenGL-6.2 -lvtkRenderingGL2PS-6.2 -lvtkRenderingImage-6.2 -lvtkRenderingLabel-6.2 -lvtkRenderingLIC-6.2 -lvtkRenderingLOD-6.2 \
-                -lvtkRenderingOpenGL-6.2 -lvtkRenderingVolume-6.2 -lvtkRenderingVolumeOpenGL-6.2 -lvtksqlite-6.2 -lvtksys-6.2 -lvtkTestingGenericBridge-6.2 -lvtkTestingIOSQL-6.2 \
-                -lvtkTestingRendering-6.2 -lvtktiff-6.2 -lvtkverdict-6.2 -lvtkViewsContext2D-6.2 -lvtkViewsCore-6.2 -lvtkViewsInfovis-6.2 -lvtkzlib-6.2
+#-lvtkexpat-$$VTK_VERSION -lvtkfreetype-$$VTK_VERSION -lvtkgl2ps-$$VTK_VERSION -lvtkhdf5-$$VTK_VERSION  -lvtkhdf5_hl-$$VTK_VERSION -lvtkIOParallel-$$VTK_VERSION -lvtkjpeg-$$VTK_VERSION -lvtkjsoncpp-$$VTK_VERSION -lvtklibxml2-$$VTK_VERSION
+#-lvtkIOParallelXML-$$VTK_VERSION -lvtkNetCDF-$$VTK_VERSION -lvtkNetCDF_cxx-$$VTK_VERSION -lvtkoggtheora-$$VTK_VERSION -lvtkRenderingContextOpenGL-$$VTK_VERSION -lvtksqlite-$$VTK_VERSION -lvtktiff-$$VTK_VERSION
+#-lvtkzlib-$$VTK_VERSION -lvtkpng-$$VTK_VERSION
 
-        INCLUDEPATH +=  ${VTK_ROOT}/ \
-                        ${VTK_ROOT}/Common/Core/ \
-                        ${VTK_ROOT}/Common/DataModel/ \
-                        ${VTK_ROOT}/Common/ExecutionModel/ \
-                        ${VTK_ROOT}/IO/XML/ \
-                        ${VTK_ROOT}/Filters/Sources/ \
-                        ${VTK_ROOT}/Rendering/Core/ \
-                        ${VTK_ROOT}/GUISupport/Qt/ \
-                        ${VTK_ROOT}/Filters/Core/ \
-                        ${VTK_ROOT}/build/Utilities/KWSys/ \
-                        ${VTK_ROOT}/build/Common/Core/ \
-                        ${VTK_ROOT}/build/Common/DataModel/ \
-                        ${VTK_ROOT}/build/Common/ExecutionModel/ \
-                        ${VTK_ROOT}/build/IO/XML/ \
-                        ${VTK_ROOT}/build/IO/Geometry \
-                        ${VTK_ROOT}/build/Filters/Sources/ \
-                        ${VTK_ROOT}/build/Rendering/Core/ \
-                        ${VTK_ROOT}/build/Rendering/OpenGL/ \
-                        ${VTK_ROOT}/build/GUISupport/Qt/ \
-                        ${VTK_ROOT}/build/Interaction/Style/ \
-                        ${VTK_ROOT}/build/Filters/Core/ \
-                        ${VTK_ROOT}/build/Filters/General/
+        LIBS += -L/usr/lib/x86_64-linux-gnu/ \
+                -lvtkalglib-$$VTK_VERSION -lvtkChartsCore-$$VTK_VERSION -lvtkTestingRendering-$$VTK_VERSION -lvtkCommonColor-$$VTK_VERSION -lvtkCommonComputationalGeometry-$$VTK_VERSION -lvtkCommonCore-$$VTK_VERSION -lvtkCommonDataModel-$$VTK_VERSION \
+                -lvtkCommonExecutionModel-$$VTK_VERSION -lvtkCommonMath-$$VTK_VERSION -lvtkCommonMisc-$$VTK_VERSION -lvtkCommonSystem-$$VTK_VERSION -lvtkCommonTransforms-$$VTK_VERSION -lvtkDICOMParser-$$VTK_VERSION \
+                -lvtkDomainsChemistry-$$VTK_VERSION -lvtkexoIIc-$$VTK_VERSION -lvtkFiltersAMR-$$VTK_VERSION -lvtkFiltersCore-$$VTK_VERSION -lvtkFiltersExtraction-$$VTK_VERSION -lvtkFiltersFlowPaths-$$VTK_VERSION \
+                -lvtkFiltersGeneral-$$VTK_VERSION -lvtkFiltersGeneric-$$VTK_VERSION -lvtkFiltersGeometry-$$VTK_VERSION -lvtkFiltersHybrid-$$VTK_VERSION -lvtkFiltersHyperTree-$$VTK_VERSION -lvtkFiltersImaging-$$VTK_VERSION \
+                -lvtkFiltersModeling-$$VTK_VERSION -lvtkFiltersParallel-$$VTK_VERSION -lvtkFiltersParallelImaging-$$VTK_VERSION -lvtkFiltersProgrammable-$$VTK_VERSION -lvtkFiltersSelection-$$VTK_VERSION -lvtkFiltersSMP-$$VTK_VERSION \
+                -lvtkFiltersSources-$$VTK_VERSION -lvtkFiltersStatistics-$$VTK_VERSION -lvtkFiltersTexture-$$VTK_VERSION -lvtkFiltersVerdict-$$VTK_VERSION -lvtkftgl-$$VTK_VERSION -lvtkGeovisCore-$$VTK_VERSION \
+                -lvtkImagingColor-$$VTK_VERSION -lvtkImagingCore-$$VTK_VERSION -lvtkImagingFourier-$$VTK_VERSION -lvtkImagingGeneral-$$VTK_VERSION -lvtkImagingHybrid-$$VTK_VERSION \
+                -lvtkImagingMath-$$VTK_VERSION -lvtkImagingMorphological-$$VTK_VERSION -lvtkImagingSources-$$VTK_VERSION -lvtkImagingStatistics-$$VTK_VERSION -lvtkImagingStencil-$$VTK_VERSION -lvtkInfovisCore-$$VTK_VERSION \
+                -lvtkInfovisLayout-$$VTK_VERSION -lvtkInteractionImage-$$VTK_VERSION -lvtkInteractionStyle-$$VTK_VERSION -lvtkInteractionWidgets-$$VTK_VERSION -lvtkIOAMR-$$VTK_VERSION -lvtkIOCore-$$VTK_VERSION -lvtkIOEnSight-$$VTK_VERSION \
+                -lvtkIOExodus-$$VTK_VERSION -lvtkIOExport-$$VTK_VERSION -lvtkIOGeometry-$$VTK_VERSION -lvtkIOImage-$$VTK_VERSION -lvtkIOImport-$$VTK_VERSION -lvtkIOInfovis-$$VTK_VERSION -lvtkIOLegacy-$$VTK_VERSION -lvtkIOLSDyna-$$VTK_VERSION -lvtkIOMINC-$$VTK_VERSION \
+                -lvtkIOMovie-$$VTK_VERSION -lvtkIONetCDF-$$VTK_VERSION -lvtkIOPLY-$$VTK_VERSION -lvtkIOSQL-$$VTK_VERSION -lvtkIOVideo-$$VTK_VERSION -lvtkIOXML-$$VTK_VERSION -lvtkIOXMLParser-$$VTK_VERSION \
+                -lvtkmetaio-$$VTK_VERSION -lvtkParallelCore-$$VTK_VERSION -lvtkproj4-$$VTK_VERSION \
+                -lvtkRenderingAnnotation-$$VTK_VERSION -lvtkRenderingContext2D-$$VTK_VERSION -lvtkRenderingCore-$$VTK_VERSION -lvtkRenderingFreeType-$$VTK_VERSION \
+                -lvtkRenderingFreeTypeOpenGL-$$VTK_VERSION -lvtkRenderingGL2PS-$$VTK_VERSION -lvtkRenderingImage-$$VTK_VERSION -lvtkRenderingLabel-$$VTK_VERSION -lvtkRenderingLIC-$$VTK_VERSION -lvtkRenderingLOD-$$VTK_VERSION \
+                -lvtkRenderingOpenGL-$$VTK_VERSION -lvtkRenderingVolume-$$VTK_VERSION -lvtkRenderingVolumeOpenGL-$$VTK_VERSION -lvtksys-$$VTK_VERSION -lvtkTestingGenericBridge-$$VTK_VERSION -lvtkTestingIOSQL-$$VTK_VERSION \
+                -lvtkTestingRendering-$$VTK_VERSION -lvtkverdict-$$VTK_VERSION -lvtkViewsContext2D-$$VTK_VERSION -lvtkViewsCore-$$VTK_VERSION -lvtkViewsInfovis-$$VTK_VERSION
+
+        INCLUDEPATH +=  /usr/include/vtk-6.1/ \
+#                        ${VTK_ROOT}/ \
+#                        ${VTK_ROOT}/Common/Core/ \
+#                        ${VTK_ROOT}/Common/DataModel/ \
+#                        ${VTK_ROOT}/Common/ExecutionModel/ \
+#                        ${VTK_ROOT}/IO/XML/ \
+#                        ${VTK_ROOT}/Filters/Sources/ \
+#                        ${VTK_ROOT}/Rendering/Core/ \
+#                        ${VTK_ROOT}/GUISupport/Qt/ \
+#                        ${VTK_ROOT}/Filters/Core/ \
+#                        ${VTK_ROOT}/build/Utilities/KWSys/ \
+#                        ${VTK_ROOT}/build/Common/Core/ \
+#                        ${VTK_ROOT}/build/Common/DataModel/ \
+#                        ${VTK_ROOT}/build/Common/ExecutionModel/ \
+#                        ${VTK_ROOT}/build/IO/XML/ \
+#                        ${VTK_ROOT}/build/IO/Geometry \
+#                        ${VTK_ROOT}/build/Filters/Sources/ \
+#                        ${VTK_ROOT}/build/Rendering/Core/ \
+#                        ${VTK_ROOT}/build/Rendering/OpenGL/ \
+#                        ${VTK_ROOT}/build/GUISupport/Qt/ \
+#                        ${VTK_ROOT}/build/Interaction/Style/ \
+#                        ${VTK_ROOT}/build/Filters/Core/ \
+#                        ${VTK_ROOT}/build/Filters/General/
+
     }
 
 }
@@ -343,7 +350,8 @@ HEADERS += classes/jrTypes.h \
     element/tPaintableElement.h element/iPaintableElement.h \
     element/misc/draping/tFiber.h \
     element/curve/tDxfSpline.h element/curve/iDxfSpline.h \
-    model/tVtkExport.h
+    model/tVtkExport.h \
+    model/export/tExporterTool.h
 
 SOURCES += classes/simplex.cpp \
            classes/tFunction.cpp \
@@ -540,7 +548,8 @@ SOURCES += classes/simplex.cpp \
     element/tPaintableElement.cpp \
     element/misc/draping/tFiber.cpp \
     element/curve/tDxfSpline.cpp \
-    model/tVtkExport.cpp
+    model/tVtkExport.cpp \
+    model/export/tExporterTool.cpp
 
 
 RESOURCES += \

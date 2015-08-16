@@ -21,7 +21,7 @@ protected:
 		virtual tString type(void) const {return iLinkedElement::theType();}
 
         virtual tString getPropertyName(int index);
-        virtual tString getPropertyType(int index);
+        virtual tString getPropertyType(unsigned int index);
         virtual bool getPropertyValue(int index, tString type, void* value);
     virtual bool setPropertyValue(int index, tString type, void* value);
         virtual bool isReadOnly(int);
